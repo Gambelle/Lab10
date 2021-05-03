@@ -1,3 +1,10 @@
+<?php
+$sqlDB = new mysqli("mysql.eecs.ku.edu","jonellegamble", "Aihoo7fe", "jonellegamble");
+if ($mysqli->connect_errno) {
+ printf("Connect failed: %s\n", $mysqli->connect_error);
+ exit();
+}
+
 <html>
   <head>
     <style>
@@ -28,60 +35,23 @@
         <th>Authors</th>
         <th>Posts</th>
       </tr>
-        <?php
-        $sqlDB = new sqlDB("mysql.eecs.ku.edu","jonellegamble", "Aihoo7fe", "jonellegamble");
-        if ($mysqli->connect_errno) {
-         printf("Connect failed: %s\n", $mysqli->connect_error);
-         exit();
-        }
         $query = "SELECT Users.user_id, Posts.post_id, Posts.content FROM Users INNER JOIN Posts ON Users.user_id = Posts.author_id GROUP BY Users.user_id;";
-        if ($results = $sqlDB->query($query)) {
-            while ($result = $results->fetch_assoc()) {
+        if ($result = $sqlDB->query($query)) {
+            while ($row = $result->fetch_assoc()) {
         ?>
         <tr>
-            <td> <input type="checkbox" name="post[]" value="<?php echo $result["post_id"]; ?>"> </td>
-            <td> <?php echo $result["user_id"]; ?> </td>
-            <td> <?php echo $result["content"]; ?> </td>
+            <td> <input type="checkbox" name="post[]" value=<?php echo $result["post_id"]; ?>> </td>
+            <td> <?php echo $row["user_id"]; ?> </td>
+            <td> <?php echo $row["content"]; ?> </td>
         </tr>
         <?php
             }
-            $results->free();
+            $result->free();
         }
         $sqlDB->close();
       ?>
     </table>
+    <input type="submit" value="Delete">
   </form>
-  </body>
-</html>
-
-
-
-
-                  <?php
-                  $query = "SELECT Users.user_id, Posts.post_id, Posts.content FROM Users INNER JOIN Posts ON Users.user_id = Posts.author_id GROUP BY Users.user_id;";
-                  if ($results = $sqlDB->query($query)) {
-                      while ($result = $results->fetch_assoc()) {
-                  ?>
-                          <tr>
-                              <td>
-                                  <?php echo $result["user_id"]; ?>
-                              </td><td>
-                                  <?php echo $result["content"]; ?>
-                              </td><td>
-                                  <input type="checkbox" name="post[]" value="<?php echo $result["post_id"]; ?>">
-                              </td>
-                          </tr>
-                  <?php
-                      }
-                      $results->free();
-                  }
-                  ?>
-                  </tbody>
-              </table>
-              <input type="submit" value="Delete">
-          </form>
-      <?php } ?>
-      <a href="AdminHome.html">Go home</a>
-      </form>
   </body>
 </html>
